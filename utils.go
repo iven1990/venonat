@@ -1,9 +1,15 @@
 package venonat
 
-func lastChar(str string) uint8 {
-	size := len(str)
-	if size == 0 {
-		panic("The length of the string can't be 0")
+import "net/http"
+
+func WrapF(f http.HandlerFunc) HandlerFunc {
+	return func(c *Context) {
+		f(c.Writer, c.Request)
 	}
-	return str[size-1]
+}
+
+func WrapH(h http.Handler) HandlerFunc {
+	return func(c *Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }

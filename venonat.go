@@ -1,13 +1,13 @@
 package venonat
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"sync"
+	"log"
 )
 
-type H map[string]interface{}
+//type H map[string]interface{}
 type HandlerFunc func(*Context)
 type HandlersChain []HandlerFunc
 
@@ -19,7 +19,6 @@ type (
 	}
 
 	Engine struct {
-		RouterGroup
 		pool  sync.Pool
 		trees methodTrees
 	}
@@ -27,15 +26,9 @@ type (
 
 func New() *Engine {
 	e := &Engine{
-		RouterGroup: RouterGroup{
-			basePath: "/",
-			root:     true,
-			Handlers: nil,
-		},
 		trees: make(methodTrees, 0, 9),
 	}
 
-	e.RouterGroup.engine = e
 	e.pool.New = func() interface{} {
 		return e.allocateContext()
 	}
@@ -48,8 +41,9 @@ func (engine *Engine) allocateContext() *Context {
 
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := engine.pool.Get().(*Context)
-	c.responseWriter.reset(w)
+
 	c.Request = req
+	c.Writer = w
 	c.reset()
 
 	engine.handleHTTPRequest(c)
@@ -63,14 +57,12 @@ func (engine *Engine) handleHTTPRequest(context *Context) {
 	trees := engine.trees
 	for i, length := 0, len(engine.trees); i < length; i++ {
 		if trees[i].method == httpMethod {
-			fmt.Println(path)
 			tree := trees.get(httpMethod)
 			handlers := tree.nodes.getValue(path)
 
 			if handlers != nil {
 				context.handlers = handlers
 				context.Next()
-				context.responseWriter.WriteHeaderNow()
 				return
 			}
 		}
@@ -80,7 +72,7 @@ func (engine *Engine) handleHTTPRequest(context *Context) {
 
 //将路由添加到树结构中
 func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
-	fmt.Println(method, path)
+	log.Println(method, path)
 
 	tree := engine.trees.get(method)
 
@@ -97,11 +89,16 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 }
 
 func (engine *Engine) Run(addr ...string) error {
-
+	log.Println("engine run:", addr)
 	address := resolveAddress(addr)
 	return http.ListenAndServe(address, engine)
 }
 
+
+
+
+
+//resolveAddress
 func resolveAddress(addr []string) string {
 	switch len(addr) {
 	case 0:

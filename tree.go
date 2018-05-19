@@ -25,13 +25,13 @@ func (trees methodTrees) get(method string) *methodTree {
 	return nil
 }
 
-//添加路由和对应的方法链
+//addRoute 添加路由和对应的方法链
 func (node *node) addRoute(path string, handlers HandlersChain) {
 	node.path = path
 	node.handlers = handlers
 }
 
-//获取路由对应的方法链
+//getValue 获取路由对应的方法链
 func (nodes nodes) getValue(path string) HandlersChain {
 	for _, node := range nodes {
 		if path == node.path {
