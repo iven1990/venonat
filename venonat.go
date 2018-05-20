@@ -5,6 +5,7 @@ import (
 	"os"
 	"sync"
 	"log"
+	"html/template"
 )
 
 //type H map[string]interface{}
@@ -21,6 +22,7 @@ type (
 	Engine struct {
 		pool  sync.Pool
 		trees methodTrees
+		htmlTmpl *template.Template
 	}
 )
 
@@ -61,6 +63,7 @@ func (engine *Engine) handleHTTPRequest(context *Context) {
 			handlers := tree.nodes.getValue(path)
 
 			if handlers != nil {
+				log.Println(httpMethod, path)
 				context.handlers = handlers
 				context.Next()
 				return
