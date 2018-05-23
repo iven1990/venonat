@@ -13,3 +13,8 @@ func WrapH(h http.Handler) HandlerFunc {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
+
+func NotFound(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNotFound)
+	w.Write([]byte("404 not found"))
+}

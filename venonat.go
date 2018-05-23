@@ -1,11 +1,11 @@
 package venonat
 
 import (
+	"html/template"
+	"log"
 	"net/http"
 	"os"
 	"sync"
-	"log"
-	"html/template"
 )
 
 //type H map[string]interface{}
@@ -20,8 +20,8 @@ type (
 	}
 
 	Engine struct {
-		pool  sync.Pool
-		trees methodTrees
+		pool     sync.Pool
+		trees    methodTrees
 		htmlTmpl *template.Template
 	}
 )
@@ -67,6 +67,8 @@ func (engine *Engine) handleHTTPRequest(context *Context) {
 				context.handlers = handlers
 				context.Next()
 				return
+			} else {
+
 			}
 		}
 	}
@@ -96,10 +98,6 @@ func (engine *Engine) Run(addr ...string) error {
 	address := resolveAddress(addr)
 	return http.ListenAndServe(address, engine)
 }
-
-
-
-
 
 //resolveAddress
 func resolveAddress(addr []string) string {

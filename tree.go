@@ -41,6 +41,6 @@ func (nodes nodes) getValue(path string) HandlersChain {
 	return nil
 }
 
-func (nodes nodes) addNode (node *node) {
+func (nodes nodes) addNode(node *node) {
 	nodes = append(nodes, node)
 }

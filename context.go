@@ -5,7 +5,7 @@ import (
 )
 
 type Context struct {
-	engine         *Engine
+	engine *Engine
 
 	Request *http.Request
 	Writer  http.ResponseWriter
@@ -23,7 +23,7 @@ func (c *Context) reset() {
 func (c *Context) Next() {
 	c.index++
 	s := int8(len(c.handlers))
-	for ; c.index < s; c.index++  {
+	for ; c.index < s; c.index++ {
 		c.handlers[c.index](c)
 	}
 }
