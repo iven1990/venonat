@@ -47,9 +47,12 @@ func (group *RouterGroup) Static(relativePath string, dir string) IRoutes {
 		if info.IsDir() {
 			return nil
 		}
+		if relativePath == "/" {
+			relativePath = ""
+		}
 
-		trimPath := strings.TrimSuffix(dir, "./")
-		routePath := relativePath + "/" + strings.TrimPrefix(path, trimPath)
+		trimPath := strings.TrimLeft(dir, "./")
+		routePath := relativePath + "/" + strings.TrimPrefix(path, trimPath+"/")
 		cHandler := func(newPath string) HandlerFunc {
 			return func(c *Context) {
 				c.File(newPath)
