@@ -75,6 +75,16 @@ func (group *RouterGroup) PATCH(relativePath string, handlers ...HandlerFunc) IR
 	return group
 }
 
+func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	group.handle("DELETE", relativePath, handlers)
+	return group
+}
+
+func (group *RouterGroup) PUT(relativePath string, handlers ...HandlerFunc) IRoutes {
+	group.handle("PUT", relativePath, handlers)
+	return group
+}
+
 func (group *RouterGroup) handle(method string, relativePath string, handlers HandlersChain) IRoutes {
 	absolutePath := group.basePath
 	if absolutePath == "/" {
